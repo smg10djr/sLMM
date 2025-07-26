@@ -103,4 +103,107 @@ npm run lint
 
 **Theme System**: Dynamic theme switching with CSS custom properties and view transitions for smooth dark/light mode changes.
 
+## Deep Architectural Analysis
+
+### Component Architecture Patterns
+
+**Widget-Based Design**: The application follows a modular widget-based architecture:
+- **Dashboard Widgets**: Self-contained components (`StatsWidget`, `RevenueStreamWidget`, `RecentSalesWidget`) that handle their own data visualization and state
+- **Composable Integration**: Widgets leverage the `useLayout()` composable for theme-aware styling and responsive behavior
+- **Chart Integration**: Complex widgets like `RevenueStreamWidget` integrate Chart.js with reactive theme system using CSS custom properties
+
+**Component Hierarchy**:
+```
+App.vue (Root + Dev Toolbar)
+├── AppLayout.vue (Main Layout Container)
+│   ├── AppTopbar.vue (Header with menu toggle, breadcrumbs)
+│   ├── AppSidebar.vue (Navigation container)
+│   │   ├── AppMenu.vue (Menu structure definition)
+│   │   └── AppMenuItem.vue (Recursive menu item rendering)
+│   ├── router-view (Dynamic page content)
+│   └── AppFooter.vue (Footer content)
+├── Dashboard Widgets (Specialized display components)
+├── Landing Widgets (Marketing page components)
+└── FloatingConfigurator.vue (Theme customization overlay)
+```
+
+### State Management Architecture
+
+**Centralized Layout State**: Single source of truth via `useLayout()` composable:
+- **layoutConfig**: Theme settings (preset, primary color, dark mode, menu mode)
+- **layoutState**: UI state (menu visibility, active items, sidebar states)
+- **Reactive Computation**: Computed properties for theme-aware styling
+- **Event Handlers**: Centralized methods for theme toggle, menu control, active item tracking
+
+**State Flow Pattern**:
+1. `useLayout()` provides reactive state and methods
+2. Layout components consume and modify state through composable
+3. Child components access layout state for theme-aware behavior
+4. Router integration for active menu item tracking
+
+### Navigation & Routing Architecture
+
+**Hierarchical Menu System**: 
+- **Declarative Structure**: Menu items defined as nested objects with metadata (label, icon, route, permissions)
+- **Recursive Rendering**: `AppMenuItem.vue` recursively renders nested menu structures
+- **Route Integration**: Automatic active state management based on current route
+- **Mobile Responsiveness**: Dynamic menu behavior (static → overlay) based on viewport width
+
+**Route Organization**:
+- **Layout-Wrapped Routes**: Main application routes nested under `AppLayout`
+- **Standalone Routes**: Authentication and landing pages outside layout system
+- **Lazy Loading**: All routes use dynamic imports for code splitting
+- **Route Matching**: Integration with menu system for active state indication
+
+### Service Layer Architecture
+
+**Mock Data Services**: Static data providers for development and demo:
+- **Service Pattern**: Each service exports methods returning Promise-wrapped static data
+- **Data Categories**: Products, Customers, Countries, Photos, Tree nodes
+- **Consistent API**: All services follow similar method naming and return patterns
+- **Development Focus**: Designed for prototyping and UI demonstration rather than production data flow
+
+**Service Integration Pattern**:
+```javascript
+// Standard service usage in components
+import { ProductService } from '@/service/ProductService';
+
+onMounted(() => {
+    ProductService.getProducts().then(data => products.value = data);
+});
+```
+
+### Key Architectural Decisions
+
+**Composition API Adoption**: Consistent use of `<script setup>` syntax across all components for:
+- Better TypeScript integration
+- Improved tree-shaking
+- More intuitive reactive state management
+- Reduced boilerplate code
+
+**Theme System Integration**: Deep integration of theme system throughout component hierarchy:
+- CSS custom properties for dynamic theming
+- View Transitions API for smooth theme changes
+- Reactive theme computation in chart components
+- Responsive breakpoint system aligned with design tokens
+
+**Component Boundaries**: Clear separation of concerns:
+- **Layout Components**: Handle structural and navigational concerns
+- **Widget Components**: Self-contained business logic and data visualization
+- **Page Components**: Coordinate widgets and handle page-level state
+- **Service Layer**: Isolated data access patterns
+
+### Development Patterns
+
+**Auto-Import System**: Leverages Vite's auto-import resolver:
+- PrimeVue components automatically resolved
+- No manual imports needed for UI components
+- Improved developer experience and reduced bundle size
+
+**Responsive Design Patterns**: 
+- Tailwind CSS grid system for layout responsiveness
+- Viewport-based menu behavior switching
+- Theme-aware component styling
+- Mobile-first responsive breakpoints
+
 When working with this codebase, follow the existing patterns for new components, utilize the centralized layout state management, and maintain the separation between layout, page, and component concerns.
