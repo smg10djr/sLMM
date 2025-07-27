@@ -1,5 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
-@use 'primeicons/primeicons.css';
-@use '@/assets/tailwind.css';
+
+/* SCSS 모듈 import (@use는 최상단에) */
 @use '@/assets/layout/layout.scss';
 @use '@/assets/demo/demo.scss';
+
+/* CSS 파일 import */
+@import 'primeicons/primeicons.css';
+@import '@/assets/tailwind.css';

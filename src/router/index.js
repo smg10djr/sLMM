@@ -13,96 +13,84 @@ const router = createRouter({
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue')
                 },
-                {
-                    path: '/uikit/formlayout',
-                    name: 'formlayout',
-                    component: () => import('@/views/uikit/FormLayout.vue')
-                },
-                {
-                    path: '/uikit/input',
-                    name: 'input',
-                    component: () => import('@/views/uikit/InputDoc.vue')
-                },
-                {
-                    path: '/uikit/button',
-                    name: 'button',
-                    component: () => import('@/views/uikit/ButtonDoc.vue')
-                },
-                {
-                    path: '/uikit/table',
-                    name: 'table',
-                    component: () => import('@/views/uikit/TableDoc.vue')
-                },
-                {
-                    path: '/uikit/list',
-                    name: 'list',
-                    component: () => import('@/views/uikit/ListDoc.vue')
-                },
-                {
-                    path: '/uikit/tree',
-                    name: 'tree',
-                    component: () => import('@/views/uikit/TreeDoc.vue')
-                },
-                {
-                    path: '/uikit/panel',
-                    name: 'panel',
-                    component: () => import('@/views/uikit/PanelsDoc.vue')
-                },
-
-                {
-                    path: '/uikit/overlay',
-                    name: 'overlay',
-                    component: () => import('@/views/uikit/OverlayDoc.vue')
-                },
-                {
-                    path: '/uikit/media',
-                    name: 'media',
-                    component: () => import('@/views/uikit/MediaDoc.vue')
-                },
-                {
-                    path: '/uikit/message',
-                    name: 'message',
-                    component: () => import('@/views/uikit/MessagesDoc.vue')
-                },
-                {
-                    path: '/uikit/file',
-                    name: 'file',
-                    component: () => import('@/views/uikit/FileDoc.vue')
-                },
-                {
-                    path: '/uikit/menu',
-                    name: 'menu',
-                    component: () => import('@/views/uikit/MenuDoc.vue')
-                },
-                {
-                    path: '/uikit/charts',
-                    name: 'charts',
-                    component: () => import('@/views/uikit/ChartDoc.vue')
-                },
-                {
-                    path: '/uikit/misc',
-                    name: 'misc',
-                    component: () => import('@/views/uikit/MiscDoc.vue')
-                },
-                {
-                    path: '/uikit/timeline',
-                    name: 'timeline',
-                    component: () => import('@/views/uikit/TimelineDoc.vue')
-                },
+                // UIKit 페이지들 임시 비활성화 (PrimeVue cx 오류 해결 후 재활성화)
+                // {
+                //     path: '/uikit/formlayout',
+                //     name: 'formlayout',
+                //     component: () => import('@/views/uikit/FormLayout.vue')
+                // },
                 {
                     path: '/pages/empty',
                     name: 'empty',
                     component: () => import('@/views/pages/Empty.vue')
                 },
+                // 임시 비활성화
+                // {
+                //     path: '/pages/crud',
+                //     name: 'crud',
+                //     component: () => import('@/views/pages/Crud.vue')
+                // },
+                // {
+                //     path: '/documentation',
+                //     name: 'documentation',
+                //     component: () => import('@/views/pages/Documentation.vue')
+                // },
+                // 물류시스템 라우트
                 {
-                    path: '/pages/crud',
-                    name: 'crud',
-                    component: () => import('@/views/pages/Crud.vue')
+                    path: '/inventory',
+                    name: 'inventory',
+                    redirect: '/inventory/dashboard'
                 },
                 {
-                    path: '/documentation',
-                    name: 'documentation',
-                    component: () => import('@/views/pages/Documentation.vue')
+                    path: '/inventory/dashboard',
+                    name: 'inventory-dashboard',
+                    component: () => import('@/views/inventory/InventoryDashboard.vue'),
+                    meta: {
+                        title: '재고 현황',
+                        icon: 'pi pi-chart-bar',
+                        requiresAuth: true
+                    }
+                },
+                {
+                    path: '/inventory/products',
+                    name: 'inventory-products',
+                    component: () => import('@/views/inventory/ProductList.vue'),
+                    meta: {
+                        title: '상품 관리',
+                        icon: 'pi pi-box',
+                        requiresAuth: true
+                    }
+                },
+                // 향후 구현 예정 라우트 (placeholder)
+                {
+                    path: '/orders',
+                    name: 'orders',
+                    redirect: '/pages/empty',
+                    meta: {
+                        title: '주문 관리',
+                        icon: 'pi pi-shopping-cart',
+                        requiresAuth: true
+                    }
+                },
+                {
+                    path: '/shipping',
+                    name: 'shipping',
+                    redirect: '/pages/empty',
+                    meta: {
+                        title: '배송 관리',
+                        icon: 'pi pi-truck',
+                        requiresAuth: true
+                    }
+                },
+                {
+                    path: '/warehouse',
+                    name: 'warehouse',
+                    redirect: '/pages/empty',
+                    meta: {
+                        title: '창고 관리',
+                        icon: 'pi pi-building',
+                        requiresAuth: true
+                    }
                 }
             ]
         },

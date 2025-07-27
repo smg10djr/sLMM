@@ -91,6 +91,9 @@ onMounted(() => {
 <template>
     <div class="card">
         <div class="font-semibold text-xl mb-4">Revenue Stream</div>
-        <Chart type="bar" :data="chartData" :options="chartOptions" class="h-80" />
+        <!-- <Chart type="bar" :data="chartData" :options="chartOptions" class="h-80" /> -->
+        <div class="h-80 flex items-center justify-center bg-surface-50 dark:bg-surface-800 rounded-border">
+            <span class="text-muted-color">Chart will be implemented later</span>
+        </div>
     </div>
 </template>

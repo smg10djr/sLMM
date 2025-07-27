@@ -2,16 +2,23 @@
     "name": "sakai-vue",
     "version": "4.3.0",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host",
+        "dev:debug": "vite --debug --host",
         "build": "vite build",
-        "preview": "vite preview",
-        "lint": "eslint --fix . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+        "build:analyze": "vite build --mode analyze",
+        "preview": "vite preview --host",
+        "lint": "eslint --fix . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+        "lint:check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
+        "type-check": "vue-tsc --noEmit",
+        "clean": "rimraf dist node_modules/.vite"
     },
     "dependencies": {
         "@primeuix/themes": "^1.0.0",
         "@stagewise-plugins/vue": "^0.6.2",
         "@stagewise/toolbar-vue": "^0.6.2",
+        "@vueuse/core": "^13.5.0",
         "chart.js": "3.3.2",
+        "pinia": "^3.0.3",
         "primeicons": "^7.0.0",
         "primevue": "^4.3.1",
         "tailwindcss-primeui": "^0.5.0",

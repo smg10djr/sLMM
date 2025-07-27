@@ -130,7 +130,7 @@ function formatDate(value) {
 function calculateCustomerTotal(name) {
     let total = 0;
     if (customers3.value) {
-        for (let customer of customers3.value) {
+        for (const customer of customers3.value) {
             if (customer.representative.name === name) {
                 total++;
             }

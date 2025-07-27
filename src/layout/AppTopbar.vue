@@ -1,8 +1,21 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
-import AppConfigurator from './AppConfigurator.vue';
+import { ref } from 'vue';
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
+
+const configMenuVisible = ref(false);
+const topbarMenuVisible = ref(false);
+
+const toggleConfigMenu = () => {
+    configMenuVisible.value = !configMenuVisible.value;
+    topbarMenuVisible.value = false; // Close other menu
+};
+
+const toggleTopbarMenu = () => {
+    topbarMenuVisible.value = !topbarMenuVisible.value;
+    configMenuVisible.value = false; // Close other menu
+};
 </script>
 
 <template>
@@ -41,24 +54,24 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
                 </button>
                 <div class="relative">
                     <button
-                        v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
+                        @click="toggleConfigMenu"
                         type="button"
                         class="layout-topbar-action layout-topbar-action-highlight"
                     >
                         <i class="pi pi-palette"></i>
                     </button>
-                    <AppConfigurator />
+                    <!-- AppConfigurator 임시 비활성화 -->
                 </div>
             </div>
 
             <button
                 class="layout-topbar-menu-button layout-topbar-action"
-                v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
+                @click="toggleTopbarMenu"
             >
                 <i class="pi pi-ellipsis-v"></i>
             </button>
 
-            <div class="layout-topbar-menu hidden lg:block">
+            <div class="layout-topbar-menu" :class="{ 'hidden': !topbarMenuVisible, 'lg:block': true }">
                 <div class="layout-topbar-menu-content">
                     <button type="button" class="layout-topbar-action">
                         <i class="pi pi-calendar"></i>

@@ -236,11 +236,15 @@ function onMenuModeChange() {
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-sm text-muted-color font-semibold">Presets</span>
-                <SelectButton v-model="preset" @change="onPresetChange" :options="presetOptions" :allowEmpty="false" />
+                <select v-model="preset" @change="onPresetChange" class="border border-surface-border rounded p-2">
+                    <option v-for="option in presetOptions" :key="option" :value="option">{{ option }}</option>
+                </select>
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-sm text-muted-color font-semibold">Menu Mode</span>
-                <SelectButton v-model="menuMode" @change="onMenuModeChange" :options="menuModeOptions" :allowEmpty="false" optionLabel="label" optionValue="value" />
+                <select v-model="menuMode" @change="onMenuModeChange" class="border border-surface-border rounded p-2">
+                    <option v-for="option in menuModeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                </select>
             </div>
         </div>
     </div>

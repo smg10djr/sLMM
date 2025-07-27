@@ -1,0 +1,259 @@
+/* 다크모드 CSS 변수 및 전역 스타일 */
+
+:root {
+  /* 라이트 모드 색상 */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  
+  --color-border-primary: #e5e7eb;
+  --color-border-secondary: #d1d5db;
+  
+  --color-sidebar-bg: #1f2937;
+  --color-sidebar-hover: #374151;
+  --color-sidebar-active: #3b82f6;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* 다크모드 색상 오버라이드 */
+.app-dark {
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #374151;
+  
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  
+  --color-border-primary: #374151;
+  --color-border-secondary: #4b5563;
+  
+  --color-sidebar-bg: #111827;
+  --color-sidebar-hover: #4b5563;
+  --color-sidebar-active: #3b82f6;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* 부드러운 전환 효과 */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* 다크모드 전환 애니메이션 */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 전역 다크모드 스타일 */
+.app-dark {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.app-dark body {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+/* 스크롤바 다크모드 스타일 */
+.app-dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.app-dark ::-webkit-scrollbar-track {
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+
+.app-dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+.app-dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox 스크롤바 */
+.app-dark * {
+  scrollbar-width: thin;
+  scrollbar-color: #6b7280 var(--color-bg-tertiary);
+}
+
+/* 입력 요소 다크모드 스타일 */
+.app-dark input,
+.app-dark textarea,
+.app-dark select {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+.app-dark input:focus,
+.app-dark textarea:focus,
+.app-dark select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 버튼 다크모드 스타일 */
+.app-dark button {
+  color: var(--color-text-primary);
+}
+
+.app-dark button:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+/* 모달/다이얼로그 다크모드 스타일 */
+.app-dark .modal,
+.app-dark .dialog {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border-primary);
+}
+
+/* 카드 스타일 */
+.app-dark .card {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* 테이블 다크모드 스타일 */
+.app-dark table {
+  background-color: var(--color-bg-primary);
+}
+
+.app-dark table th {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+.app-dark table td {
+  border-color: var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+.app-dark table tr:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+/* 링크 다크모드 스타일 */
+.app-dark a {
+  color: #60a5fa;
+}
+
+.app-dark a:hover {
+  color: #93c5fd;
+}
+
+/* 코드 블록 다크모드 스타일 */
+.app-dark pre,
+.app-dark code {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-primary);
+}
+
+/* 알림/배지 다크모드 스타일 */
+.app-dark .badge {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.app-dark .badge.primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.app-dark .badge.success {
+  background-color: #10b981;
+  color: white;
+}
+
+.app-dark .badge.warning {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.app-dark .badge.danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* 로딩 스피너 다크모드 스타일 */
+.app-dark .spinner {
+  border-color: var(--color-border-primary);
+  border-top-color: #3b82f6;
+}
+
+/* 툴팁 다크모드 스타일 */
+.app-dark .tooltip {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 드롭다운 다크모드 스타일 */
+.app-dark .dropdown-menu {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.app-dark .dropdown-item:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .app-dark {
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #e5e7eb;
+    --color-border-primary: #6b7280;
+    --color-border-secondary: #9ca3af;
+  }
+}
+
+/* 모션 감소 설정 지원 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 인쇄 모드에서 다크모드 비활성화 */
+@media print {
+  .app-dark {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .app-dark * {
+    background-color: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}

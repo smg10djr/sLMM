@@ -17,4 +17,15 @@
     --focus-ring-color: var(--p-focus-ring-color);
     --focus-ring-offset: var(--p-focus-ring-offset);
     --focus-ring-shadow: var(--p-focus-ring-shadow);
+    
+    /* Responsive breakpoints */
+    --breakpoint-mobile: 768px;
+    --breakpoint-tablet: 1024px;
+    --breakpoint-desktop: 1920px;
+    
+    /* Layout dimensions */
+    --sidebar-width-expanded: 240px;
+    --sidebar-width-collapsed: 60px;
+    --topbar-height-desktop: 60px;
+    --topbar-height-mobile: 56px;
 }

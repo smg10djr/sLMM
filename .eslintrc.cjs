@@ -18,6 +18,17 @@ module.exports = {
             {
                 order: ['script', 'template', 'style']
             }
-        ]
+        ],
+        // 물류시스템 개발을 위한 추가 규칙
+        'vue/no-side-effects-in-computed-properties': 'error',
+        'vue/no-mutating-props': 'error',
+        'vue/require-default-prop': 'warn',
+        'vue/require-prop-types': 'warn',
+        'vue/no-unused-vars': 'error',
+        'no-console': 'warn',
+        'no-debugger': 'error',
+        'no-unused-vars': 'error',
+        'prefer-const': 'error',
+        'no-var': 'error'
     }
 };
