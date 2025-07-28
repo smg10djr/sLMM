@@ -1,4 +1,4 @@
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useLocalStorage } from '@vueuse/core';
 
@@ -10,6 +10,13 @@ const tabCounter = ref(0);
 // 탭 히스토리 (최근 방문한 탭 순서)
 const tabHistory = ref([]);
 
+// 탭 제한 설정
+const MAX_TABS = 10;
+const tabLimitWarning = ref(false);
+
+// 탭 알림 상태
+const notifications = ref([]);
+
 // 로컬스토리지에 탭 상태 저장
 const savedTabs = useLocalStorage('logistics-tabs', []);
 const savedActiveTab = useLocalStorage('logistics-active-tab', null);
@@ -18,6 +25,67 @@ export function useTabs() {
     const router = useRouter();
     const route = useRoute();
     
+    // 알림 관리 함수
+    const addNotification = (type, title, message, duration = 5000) => {
+        const notification = {
+            id: `notification-${Date.now()}`,
+            type, // 'info', 'warning', 'error', 'success'
+            title,
+            message,
+            createdAt: new Date(),
+            duration
+        };
+        
+        notifications.value.push(notification);
+        
+        // 자동 제거
+        if (duration > 0) {
+            setTimeout(() => {
+                removeNotification(notification.id);
+            }, duration);
+        }
+        
+        return notification.id;
+    };
+    
+    const removeNotification = (notificationId) => {
+        const index = notifications.value.findIndex(n => n.id === notificationId);
+        if (index > -1) {
+            notifications.value.splice(index, 1);
+        }
+    };
+    
+    const clearAllNotifications = () => {
+        notifications.value = [];
+    };
+    
+    // 탭 제한 검사
+    const checkTabLimit = () => {
+        const tabCount = openTabs.value.length;
+        
+        if (tabCount >= MAX_TABS) {
+            tabLimitWarning.value = true;
+            addNotification(
+                'warning',
+                '탭 개수 제한',
+                `최대 ${MAX_TABS}개의 탭만 열 수 있습니다. 기존 탭을 닫고 다시 시도해주세요.`,
+                8000
+            );
+            return false;
+        } else if (tabCount >= MAX_TABS - 2) {
+            // 한계에 가까워질 때 경고
+            addNotification(
+                'info',
+                '탭 개수 알림',
+                `현재 ${tabCount}개의 탭이 열려있습니다. 최대 ${MAX_TABS}개까지 가능합니다.`,
+                4000
+            );
+        }
+        
+        tabLimitWarning.value = false;
+        return true;
+    };
+    
     // 탭 생성
     const createTab = (menuItem, parentMenuItem = null) => {
         const existingTab = openTabs.value.find(tab => tab.route === menuItem.route);
@@ -25,7 +93,18 @@ export function useTabs() {
         if (existingTab) {
             // 이미 존재하는 탭이면 활성화
             setActiveTab(existingTab.id);
+            addNotification(
+                'info',
+                '탭 활성화',
+                `'${existingTab.title}' 탭이 이미 열려있어 활성화했습니다.`,
+                3000
+            );
             return existingTab;
+        }
+        
+        // 탭 개수 제한 검사
+        if (!checkTabLimit()) {
+            return null;
         }
         
         // 새 탭 생성
@@ -63,6 +142,14 @@ export function useTabs() {
         // 로컬스토리지에 저장
         saveTabs();
         
+        // 성공 알림
+        addNotification(
+            'success',
+            '탭 생성',
+            `'${newTab.title}' 탭이 생성되었습니다.`,
+            2000
+        );
+        
         return newTab;
     };
     
@@ -75,13 +162,23 @@ export function useTabs() {
         
         // 닫을 수 없는 탭인지 확인
         if (!tab.canClose && !force) {
+            addNotification(
+                'warning',
+                '탭 닫기 불가',
+                `'${tab.title}' 탭은 시스템 탭으로 닫을 수 없습니다.`,
+                3000
+            );
             return false;
         }
         
         // 변경사항이 있는 경우 확인
         if (tab.isDirty && !force) {
-            // 실제 구현에서는 확인 다이얼로그 표시
-            console.warn(`Tab ${tab.title} has unsaved changes`);
+            addNotification(
+                'warning',
+                '저장되지 않은 변경사항',
+                `'${tab.title}' 탭에 저장되지 않은 변경사항이 있습니다. 저장 후 다시 시도해주세요.`,
+                5000
+            );
             return false;
         }
         
@@ -102,6 +199,14 @@ export function useTabs() {
         
         // 로컬스토리지 업데이트
         saveTabs();
+        
+        // 성공 알림
+        addNotification(
+            'info',
+            '탭 닫기',
+            `'${tab.title}' 탭이 닫혔습니다.`,
+            2000
+        );
         
         return true;
     };
@@ -200,6 +305,95 @@ export function useTabs() {
         const tab = openTabs.value.splice(fromIndex, 1)[0];
         openTabs.value.splice(toIndex, 0, tab);
         saveTabs();
+    };
+    
+    // 미들 클릭으로 탭 닫기
+    const handleTabMiddleClick = (event, tabId) => {
+        // 미들 클릭 (휠 클릭) 감지
+        if (event.button === 1) {
+            event.preventDefault();
+            closeTab(tabId);
+        }
+    };
+    
+    // 탭 우클릭 컨텍스트 메뉴
+    const getTabContextMenuItems = (tabId) => {
+        const tab = openTabs.value.find(t => t.id === tabId);
+        if (!tab) return [];
+        
+        const items = [];
+        
+        // 탭 닫기
+        if (tab.canClose) {
+            items.push({
+                id: 'close',
+                label: '탭 닫기',
+                icon: '✕',
+                action: () => closeTab(tabId),
+                shortcut: 'Ctrl+W'
+            });
+        }
+        
+        // 다른 탭 모두 닫기
+        const closeableTabs = openTabs.value.filter(t => t.canClose && t.id !== tabId);
+        if (closeableTabs.length > 0) {
+            items.push({
+                id: 'close-others',
+                label: '다른 탭 모두 닫기',
+                icon: '⊗',
+                action: () => closeOtherTabs(tabId)
+            });
+        }
+        
+        // 모든 탭 닫기
+        if (closeableTabs.length > 0) {
+            items.push({
+                id: 'close-all',
+                label: '모든 탭 닫기',
+                icon: '⊠',
+                action: () => closeAllTabs()
+            });
+        }
+        
+        // 구분선
+        if (items.length > 0) {
+            items.push({ id: 'separator-1', type: 'separator' });
+        }
+        
+        // 새 창에서 열기
+        items.push({
+            id: 'open-new-window',
+            label: '새 창에서 열기',
+            icon: '⧉',
+            action: () => {
+                window.open(tab.route, '_blank');
+            }
+        });
+        
+        // 탭 복제
+        items.push({
+            id: 'duplicate',
+            label: '탭 복제',
+            icon: '⊞',
+            action: () => {
+                const menuItem = {
+                    id: tab.menuId,
+                    label: tab.title,
+                    route: tab.route,
+                    icon: tab.icon,
+                    iconActive: tab.iconActive,
+                    iconColor: tab.iconColor,
+                    description: tab.description,
+                    permissions: tab.permissions,
+                    badgeCount: tab.badgeCount,
+                    isNew: tab.isNew
+                };
+                
+                createTab(menuItem);
+            }
+        });
+        
+        return items;
     };
     
     // 탭 상태 업데이트
@@ -362,6 +556,8 @@ export function useTabs() {
         activeTab,
         sortedTabs,
         recentTabs,
+        tabLimitWarning: computed(() => tabLimitWarning.value),
+        notifications: computed(() => notifications.value),
         
         // 탭 관리
         createTab,
@@ -376,9 +572,19 @@ export function useTabs() {
         setTabDirty,
         setTabLoading,
         
+        // 탭 인터랙션
+        handleTabMiddleClick,
+        getTabContextMenuItems,
+        
+        // 알림 관리
+        addNotification,
+        removeNotification,
+        clearAllNotifications,
+        
         // 유틸리티
         findTabByRoute,
         searchTabs,
+        checkTabLimit,
         
         // 초기화/정리
         initializeTabs,
@@ -386,7 +592,10 @@ export function useTabs() {
         
         // 수동 저장
         saveTabs,
-        restoreTabs
+        restoreTabs,
+        
+        // 상수
+        MAX_TABS
     };
 }
 

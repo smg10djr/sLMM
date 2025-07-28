@@ -23,7 +23,6 @@ declare module 'vue' {
     HeroWidget: typeof import('./src/components/landing/HeroWidget.vue')['default']
     HighlightsWidget: typeof import('./src/components/landing/HighlightsWidget.vue')['default']
     InputText: typeof import('primevue/inputtext')['default']
-    Message: typeof import('primevue/message')['default']
     NotificationsWidget: typeof import('./src/components/dashboard/NotificationsWidget.vue')['default']
     Password: typeof import('primevue/password')['default']
     PricingWidget: typeof import('./src/components/landing/PricingWidget.vue')['default']
@@ -34,6 +33,7 @@ declare module 'vue' {
     StatsWidget: typeof import('./src/components/dashboard/StatsWidget.vue')['default']
     TabBar: typeof import('./src/components/common/TabBar.vue')['default']
     Tag: typeof import('primevue/tag')['default']
+    Tooltip: typeof import('./src/components/common/Tooltip.vue')['default']
     TopbarWidget: typeof import('./src/components/landing/TopbarWidget.vue')['default']
     UserDropdown: typeof import('./src/components/common/UserDropdown.vue')['default']
   }

@@ -11,9 +11,9 @@
                 v-if="showScrollButtons && canScrollLeft"
                 class="tab-scroll-btn tab-scroll-btn--left"
                 @click="scrollTabs(-200)"
-                :aria-label="t('tabs.scrollLeft')"
+                :aria-label="'왼쪽으로 스크롤'"
             >
-                <i class="pi pi-chevron-left"></i>
+                ‹
             </button>
             
             <!-- 탭 스크롤 영역 -->
@@ -57,7 +57,7 @@
                         <span 
                             v-if="tab.isDirty" 
                             class="tab__dirty-indicator"
-                            :title="t('tabs.unsavedChanges')"
+                            title="저장되지 않은 변경사항"
                         >
                             •
                         </span>
@@ -91,7 +91,7 @@
                             v-if="tab.canClose"
                             class="tab__close"
                             @click.stop="handleTabClose(tab)"
-                            :aria-label="t('tabs.closeTab', { title: tab.title })"
+                            :aria-label="`탭 닫기: ${tab.title}`"
                         >
                             <i class="pi pi-times"></i>
                         </button>
@@ -104,7 +104,7 @@
                 v-if="showScrollButtons && canScrollRight"
                 class="tab-scroll-btn tab-scroll-btn--right"
                 @click="scrollTabs(200)"
-                :aria-label="t('tabs.scrollRight')"
+                :aria-label="'오른쪽으로 스크롤'"
             >
                 <i class="pi pi-chevron-right"></i>
             </button>
@@ -115,7 +115,7 @@
                 <button
                     class="tab-action-btn"
                     @click="toggleTabList"
-                    :aria-label="t('tabs.showAllTabs')"
+                    :aria-label="'모든 탭 보기'"
                 >
                     <i class="pi pi-list"></i>
                 </button>
@@ -124,7 +124,7 @@
                 <button
                     class="tab-action-btn"
                     @click="toggleTabOptions"
-                    :aria-label="t('tabs.options')"
+                    :aria-label="'탭 옵션'"
                 >
                     <i class="pi pi-ellipsis-v"></i>
                 </button>
@@ -138,7 +138,7 @@
             v-click-outside="hideTabListMenu"
         >
             <div class="tab-list-menu__header">
-                <h3>{{ t('tabs.openTabs') }}</h3>
+                <h3>열린 탭들</h3>
                 <button @click="hideTabListMenu">
                     <i class="pi pi-times"></i>
                 </button>
@@ -175,16 +175,16 @@
         >
             <button @click="closeOtherTabs(activeTabId); hideTabOptionsMenu()">
                 <i class="pi pi-times"></i>
-                {{ t('tabs.closeOthers') }}
+                다른 탭 모두 닫기
             </button>
             <button @click="closeAllTabs(); hideTabOptionsMenu()">
                 <i class="pi pi-times-circle"></i>
-                {{ t('tabs.closeAll') }}
+                모든 탭 닫기
             </button>
             <hr>
             <button @click="openTabSettings(); hideTabOptionsMenu()">
                 <i class="pi pi-cog"></i>
-                {{ t('tabs.settings') }}
+탭 설정
             </button>
         </div>
         
@@ -200,17 +200,17 @@
                 @click="handleTabClose(contextMenu.tab); hideContextMenu()"
             >
                 <i class="pi pi-times"></i>
-                {{ t('tabs.close') }}
+탭 닫기
             </button>
             <button 
                 @click="closeOtherTabs(contextMenu.tab?.id); hideContextMenu()"
             >
                 <i class="pi pi-times"></i>
-                {{ t('tabs.closeOthers') }}
+                다른 탭 모두 닫기
             </button>
             <button @click="closeAllTabs(); hideContextMenu()">
                 <i class="pi pi-times-circle"></i>
-                {{ t('tabs.closeAll') }}
+                모든 탭 닫기
             </button>
             <hr v-if="contextMenu.tab?.canClose">
             <button 
@@ -218,7 +218,7 @@
                 @click="saveTab(contextMenu.tab); hideContextMenu()"
             >
                 <i class="pi pi-save"></i>
-                {{ t('tabs.save') }}
+저장
             </button>
         </div>
     </div>
@@ -228,7 +228,6 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { useGlobalTabs } from '@/composables/useTabs';
 import { useLayoutStore } from '@/stores/useLayoutStore';
-import { useI18n } from '@/composables/useI18n';
 import { vClickOutside } from '@/directives/clickOutside';
 
 // Props
@@ -259,7 +258,6 @@ const {
 } = useGlobalTabs();
 
 const layoutStore = useLayoutStore();
-const { t } = useI18n();
 
 // 반응형 상태
 const tabContainer = ref(null);

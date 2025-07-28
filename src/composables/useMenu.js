@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useGlobalTabs } from './useTabs.js';
 
 // 물류시스템 메뉴 구조 정의
 const menuItems = ref([
@@ -450,6 +451,7 @@ const userPermissions = ref(['read', 'write', 'admin']);
 export function useMenu() {
     const router = useRouter();
     const route = useRoute();
+    const { createTab } = useGlobalTabs();
     
     // 권한에 따른 메뉴 필터링
     const filteredMenuItems = computed(() => {
@@ -486,11 +488,27 @@ export function useMenu() {
         return false;
     };
     
-    // 메뉴 클릭 핸들러
-    const handleMenuClick = (menuItem) => {
-        if (menuItem.route) {
+    // 메뉴 클릭 핸들러 - 탭 생성 통합
+    const handleMenuClick = (menuItem, parentMenuItem = null) => {
+        if (!menuItem.route) return;
+        
+        // 탭 생성 (대시보드가 아닌 경우 탭으로 열기)
+        if (menuItem.id !== 'dashboard') {
+            const newTab = createTab(menuItem, parentMenuItem);
+            
+            // 탭이 성공적으로 생성되면 해당 경로로 이동
+            if (newTab) {
+                router.push(menuItem.route);
+            }
+        } else {
+            // 대시보드는 직접 이동 (탭 생성하지 않음)
             router.push(menuItem.route);
         }
+    };
+    
+    // 자식 메뉴 클릭 핸들러 (부모 메뉴 정보 포함)
+    const handleChildMenuClick = (childMenuItem, parentMenuItem) => {
+        handleMenuClick(childMenuItem, parentMenuItem);
     };
     
     // 메뉴 상태 관리
@@ -550,6 +568,7 @@ export function useMenu() {
         menuItems: filteredMenuItems,
         isMenuActive,
         handleMenuClick,
+        handleChildMenuClick,
         expandedMenus,
         toggleMenuExpanded,
         isMenuExpanded,
